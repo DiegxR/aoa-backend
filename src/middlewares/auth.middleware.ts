@@ -20,7 +20,7 @@ export const authMiddleware = async (req: Request): Promise<GraphQLContext> => {
       user: {
         id: String(user._id),
         email: user.email,
-        role: user.role,
+        role: user.role as any,
       },
     };
   } catch {

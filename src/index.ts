@@ -25,7 +25,14 @@ async function bootstrap(): Promise<void> {
   });
 
   await server.start();
-  server.applyMiddleware({ app, path: '/graphql' });
+  server.applyMiddleware({ 
+    app, 
+    path: '/graphql',
+    cors: {
+      origin: process.env.FRONTEND_URL ?? '*',
+      credentials: true
+    }
+  });
 
   const PORT = process.env.PORT ?? 4000;
   app.listen(PORT, () => {

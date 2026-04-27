@@ -36,7 +36,7 @@ export const userResolver = {
       const userFromAuth = checkRole(context, ['admin']);
       
       // Filtrar por createdBy igual al id del usuario autenticado
-      const users = await User.find({ createdBy: userFromAuth.id }).select('-password').lean();
+      const users = await User.find({ createdBy: userFromAuth.id as any }).select('-password').lean();
       
       // Transformar cada usuario
       return users.map(transformUser);
@@ -52,8 +52,12 @@ export const userResolver = {
       const existing = await User.findOne({ email: args.email });
       if (existing) throw new UserInputError('El email ya está registrado');
 
-      const user = await User.create(args);
-      const token = generateToken({ id: String(user._id), email: user.email, role: user.role });
+      const user = await User.create({
+        ...args,
+        role: args.role as any,
+        createdBy: args.createdBy as any
+      });
+      const token = generateToken({ id: String(user._id), email: user.email, role: user.role as any });
       return { token, user: transformUser(user) };
     },
 
@@ -67,7 +71,7 @@ export const userResolver = {
       const valid = await user.comparePassword(args.password);
       if (!valid) throw new AuthenticationError('Credenciales inválidas');
 
-      const token = generateToken({ id: String(user._id), email: user.email, role: user.role });
+      const token = generateToken({ id: String(user._id), email: user.email, role: user.role as any });
       return { token, user: transformUser(user) };
     },
   },

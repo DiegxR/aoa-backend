@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: aoa-backend
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 20.x
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        fromValue: ${MONGODB_URI}
+      - key: JWT_SECRET
+        fromValue: ${JWT_SECRET}
+      - key: FRONTEND_URL
+        value: "*" # Cambiar por la URL real del frontend después del despliegue

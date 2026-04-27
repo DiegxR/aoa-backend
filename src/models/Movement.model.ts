@@ -11,6 +11,8 @@ export interface IMovement extends Document {
   stockAfter: number;
   notes?: string;
   registeredBy: Types.ObjectId;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const movementSchema = new Schema<IMovement>({

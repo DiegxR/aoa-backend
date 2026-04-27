@@ -43,7 +43,7 @@ export const movementTypeDef = gql`
   }
 
   extend type Query {
-    movements(productId: ID, type: String, startDate: String, endDate: String): [Movement!]!
+    movements(productId: ID, type: String, userId: ID, startDate: String, endDate: String): [Movement!]!
     kardex(productId: ID): [Kardex!]!
     salesStats: SalesStats!
     salesByMonth: ChartData!

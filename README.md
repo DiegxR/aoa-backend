@@ -81,3 +81,22 @@ El backend es una API robusta y segura diseñada bajo una arquitectura de capas.
 
 ## API Endpoints
 La API principal está expuesta en `/graphql`. Puedes acceder al Playground de Apollo en modo desarrollo para explorar los esquemas y probar las consultas.
+
+## Despliegue en Render
+
+Este proyecto está configurado para ser desplegado en **Render**.
+
+### Pasos para el Despliegue:
+1. Conecta tu repositorio de GitHub a Render.
+2. Crea un nuevo **Web Service**.
+3. Render detectará automáticamente el archivo `render.yaml` y configurará el servicio.
+4. Asegúrate de configurar las siguientes **Variables de Entorno** en el panel de Render:
+   - `MONGODB_URI`: URL de conexión a tu base de datos (ej. MongoDB Atlas).
+   - `JWT_SECRET`: Una cadena aleatoria y segura para firmar los tokens.
+   - `FRONTEND_URL`: La URL de tu aplicación frontend (para habilitar CORS).
+
+### Scripts de Despliegue:
+- **Build Command**: `npm install && npm run build`
+- **Start Command**: `npm start`
+- **Puerto**: Render asignará uno automáticamente a través de la variable `PORT`.
+

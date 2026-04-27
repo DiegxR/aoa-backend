@@ -12,13 +12,14 @@ export const movementResolver = {
   Query: {
     movements: async (
       _: unknown, 
-      { productId, type, startDate, endDate }: { productId?: string; type?: string; startDate?: string; endDate?: string }, 
+      { productId, type, userId, startDate, endDate }: { productId?: string; type?: string; userId?: string; startDate?: string; endDate?: string }, 
       context: GraphQLContext
     ) => {
-      checkRole(context, ['admin', 'bodeguero', 'consultor']);
+      checkRole(context, ['admin', 'bodeguero', 'consultor', 'user'] as any);
       const filter: any = {};
       if (productId) filter.product = productId;
       if (type) filter.type = type;
+      if (userId) filter.registeredBy = userId;
       if (startDate || endDate) {
         filter.createdAt = {};
         if (startDate) filter.createdAt.$gte = new Date(startDate);
@@ -27,12 +28,12 @@ export const movementResolver = {
       return Movement.find(filter).populate('product registeredBy').sort({ createdAt: -1 });
     },
     kardex: async (_: unknown, { productId }: { productId?: string }, context: GraphQLContext) => {
-      checkRole(context, ['admin', 'bodeguero', 'consultor', 'user']);
+      checkRole(context, ['admin', 'bodeguero', 'consultor', 'user'] as any);
       const filter = productId ? { product: productId } : {};
       return Kardex.find(filter).populate('product movement').sort({ date: -1 });
     },
     salesStats: async (_: unknown, __: unknown, context: GraphQLContext) => {
-      checkRole(context, ['admin', 'consultor']);
+      checkRole(context, ['admin', 'consultor'] as any);
       const now = new Date();
       const dayStart = startOfDay(now);
       const weekStart = startOfWeek(now);
@@ -55,7 +56,7 @@ export const movementResolver = {
       };
     },
     salesByMonth: async (_: unknown, __: unknown, context: GraphQLContext) => {
-      checkRole(context, ['admin', 'consultor']);
+      checkRole(context, ['admin', 'consultor'] as any);
       const labels = [];
       const values = [];
       for (let i = 5; i >= 0; i--) {
@@ -74,7 +75,7 @@ export const movementResolver = {
       return { labels, values };
     },
     salesByCategory: async (_: unknown, __: unknown, context: GraphQLContext) => {
-      checkRole(context, ['admin', 'consultor']);
+      checkRole(context, ['admin', 'consultor'] as any);
       const sales = await Movement.find({ type: 'salida' }).populate('product');
       const categories: { [key: string]: number } = {};
       
@@ -89,7 +90,7 @@ export const movementResolver = {
       };
     },
     inventoryTrends: async (_: unknown, { productId }: { productId: string }, context: GraphQLContext) => {
-      checkRole(context, ['admin', 'bodeguero']);
+      checkRole(context, ['admin', 'bodeguero'] as any);
       const history = await Kardex.find({ product: productId }).sort({ date: 1 }).limit(20);
       return {
         labels: history.map(h => format(new Date(h.date), 'dd/MM HH:mm')),
@@ -103,7 +104,7 @@ export const movementResolver = {
       args: CreateMovementInput,
       context: GraphQLContext
     ) => {
-      const user = checkRole(context, ['admin', 'bodeguero', 'user']);
+      const user = checkRole(context, ['admin', 'bodeguero', 'user'] as any);
 
       logOperation('createMovement', user, {
         productId: args.productId,
