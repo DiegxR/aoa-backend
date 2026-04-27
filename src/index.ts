@@ -7,47 +7,37 @@ import { authMiddleware } from './middlewares/auth.middleware';
 import { GraphQLFormattedError } from 'graphql';
 
 async function bootstrap(): Promise<void> {
-  console.log('🚀 Iniciando bootstrap...');
-  try {
-    await connectDB();
-    console.log('✅ Base de datos conectada en bootstrap');
+  await connectDB();
 
-    const app = express();
+  const app = express();
 
-    const server = new ApolloServer({
-      typeDefs,
-      resolvers,
-      context: ({ req }) => authMiddleware(req),
-      formatError: (error: GraphQLFormattedError) => {
-        console.error('[GraphQL Error]', error.message);
-        return {
-          message: error.message,
-          code: error.extensions?.code ?? 'INTERNAL_ERROR',
-        };
-      },
-    });
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context: ({ req }) => authMiddleware(req),
+    formatError: (error: GraphQLFormattedError) => {
+      console.error('[GraphQL Error]', error.message);
+      return {
+        message: error.message,
+        code: error.extensions?.code ?? 'INTERNAL_ERROR',
+      };
+    },
+  });
 
-    console.log('⏳ Iniciando Apollo Server...');
-    await server.start();
-    console.log('✅ Apollo Server iniciado');
+  await server.start();
+  server.applyMiddleware({ 
+    app, 
+    path: '/graphql',
+    cors: {
+      origin: process.env.FRONTEND_URL ?? '*',
+      credentials: true
+    }
+  });
 
-    server.applyMiddleware({ 
-      app, 
-      path: '/graphql',
-      cors: {
-        origin: process.env.FRONTEND_URL ?? '*',
-        credentials: true
-      }
-    });
-
-    const PORT = process.env.PORT ? parseInt(process.env.PORT) : 4000;
-    app.listen(PORT, '0.0.0.0', () => {
-      console.log(`🚀 Servidor listo en: http://0.0.0.0:${PORT}${server.graphqlPath}`);
-    });
-  } catch (error) {
-    console.error('❌ Error fatal durante el inicio:', error);
-    process.exit(1);
-  }
+  const PORT = process.env.PORT ?? 4000;
+  app.listen(PORT, () => {
+    console.log(`🚀 Server: http://localhost:${PORT}/graphql`);
+  });
 }
 
-bootstrap();
+bootstrap().catch(console.error);
