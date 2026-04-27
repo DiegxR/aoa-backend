@@ -7,6 +7,7 @@ import { authMiddleware } from './middlewares/auth.middleware';
 import { GraphQLFormattedError } from 'graphql';
 
 async function bootstrap(): Promise<void> {
+  try {
   await connectDB();
 
   const app = express();
@@ -34,10 +35,15 @@ async function bootstrap(): Promise<void> {
     }
   });
 
-  const PORT = process.env.PORT ?? 4000;
-  app.listen(PORT, () => {
-    console.log(`🚀 Server: http://localhost:${PORT}/graphql`);
-  });
+    const PORT = process.env.PORT ? parseInt(process.env.PORT) : 4000;
+    app.listen(PORT, '0.0.0.0', () => {
+      const displayPort = PORT === 4000 ? 'localhost:4000' : `0.0.0.0:${PORT}`;
+      console.log(`🚀 Servidor listo en: http://${displayPort}${server.graphqlPath}`);
+    });
+  } catch (error) {
+    console.error('❌ Error fatal durante el inicio:', error);
+    process.exit(1);
+  }
 }
 
-bootstrap().catch(console.error);
+bootstrap();

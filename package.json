@@ -19,7 +19,7 @@
     "graphql": "^16.13.2",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^8.9.5"
+    "mongoose": "^8.6.4"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

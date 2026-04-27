@@ -91,9 +91,14 @@ Este proyecto está configurado para ser desplegado en **Render**.
 2. Crea un nuevo **Web Service**.
 3. Render detectará automáticamente el archivo `render.yaml` y configurará el servicio.
 4. Asegúrate de configurar las siguientes **Variables de Entorno** en el panel de Render:
-   - `MONGODB_URI`: URL de conexión a tu base de datos (ej. MongoDB Atlas).
+   - `MONGODB_URI`: URL de conexión a tu base de datos. Ejemplo: `mongodb+srv://wadme5884_db_user:nioqXXm5fdi6Zs8X@cluster0.yecbbmt.mongodb.net/` 
    - `JWT_SECRET`: Una cadena aleatoria y segura para firmar los tokens.
    - `FRONTEND_URL`: La URL de tu aplicación frontend (para habilitar CORS).
+
+### Pasos Críticos en MongoDB Atlas:
+1. Ve a **Network Access** en MongoDB Atlas.
+2. Agrega la IP `0.0.0.0/0` (Allow Access from Anywhere).
+3. Sin esto, Render no podrá conectarse a la base de datos y el servidor fallará al iniciar.
 
 ### Scripts de Despliegue:
 - **Build Command**: `npm install && npm run build`
