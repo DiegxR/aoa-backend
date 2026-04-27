@@ -4,9 +4,11 @@ export const connectDB = async (): Promise<void> => {
   const uri = process.env.MONGODB_URI;
 
   if (!uri) {
+    console.error('❌ CRITICAL: MONGODB_URI no está definida en las variables de entorno');
     throw new Error('MONGODB_URI no está definida en las variables de entorno');
   }
 
+  console.log('📡 Intentando conectar a MongoDB...');
   try {
     const conn = await mongoose.connect(uri, {
       serverSelectionTimeoutMS: 5000, 
