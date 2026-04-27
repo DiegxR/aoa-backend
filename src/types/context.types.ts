@@ -1,0 +1,11 @@
+export type UserRole = 'admin' | 'user';
+
+export interface AuthUser {
+  id: string;
+  email: string;
+  role: UserRole;
+}
+
+export interface GraphQLContext {
+  user: AuthUser | null;
+}
